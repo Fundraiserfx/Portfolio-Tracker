@@ -97,8 +97,15 @@ const DonutChart = ({ slices, total }) => {
 };
 
 export default function PortfolioTracker() {
-  const [portfolio, setPortfolio] = useState(INITIAL_PORTFOLIO);
-  const [prices, setPrices] = useState({});
+  const [portfolio, setPortfolio] = useState(() => {
+  try {
+    const saved = localStorage.getItem('vault_portfolio');
+    return saved ? JSON.parse(saved) : INITIAL_PORTFOLIO;
+  } catch { return INITIAL_PORTFOLIO; }
+});
+  const [prices, setPrices] = useState({});useEffect(() => {
+  try { localStorage.setItem('vault_portfolio', JSON.stringify(portfolio)); } catch {}
+}, [portfolio]);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [tab, setTab] = useState("portfolio");
